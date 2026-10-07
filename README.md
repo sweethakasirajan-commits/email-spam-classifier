@@ -1,38 +1,35 @@
-# Email Spam Classification
+# 📧 Email Spam Classification using Data Warehouse and Machine Learning
 
-A machine learning-based web application that classifies email messages as Spam or Ham.
+## 📌 Project Overview
 
-## Features
+Email Spam Classification is a machine learning-based project developed to identify whether an email message is **Spam** or **Ham (Not Spam)**.
 
-- Email spam detection
-- Machine learning classification
-- TF-IDF text feature extraction
-- Flask web application
-- Simple user interface
+The project combines **Data Warehouse concepts, text preprocessing, TF-IDF feature extraction, Machine Learning, and Flask** to provide an end-to-end email classification system.
 
-## Technologies Used
+## 🎯 Objectives
 
-- Python
-- Flask
-- Scikit-learn
-- TF-IDF
-- Joblib
-- HTML/CSS
+- Classify email messages as Spam or Ham.
+- Preprocess and clean email text data.
+- Extract useful text features using TF-IDF.
+- Train a machine learning classification model.
+- Store classification information in a structured Data Warehouse.
+- Provide a simple web interface for users to test email messages.
 
-## Model
+## 🏗️ System Workflow
 
-The application uses a trained machine learning model and TF-IDF vectorizer to classify email messages.
-
-## How to Run
-
-1. Install the required packages:
-   pip install -r requirements.txt
-
-2. Run the Flask application:
-   python app.py
-
-3. Open the local URL shown in the terminal.
-
-## Project Purpose
-
-This project demonstrates email spam classification using machine learning and a web-based Flask application.
+```text
+Email Dataset
+      ↓
+Data Cleaning & Preprocessing
+      ↓
+TF-IDF Feature Extraction
+      ↓
+Machine Learning Model
+      ↓
+Spam / Ham Prediction
+      ↓
+Data Warehouse
+      ↓
+Flask Web Application
+      ↓
+Prediction Result
