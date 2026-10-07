@@ -13,11 +13,11 @@ app = Flask(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 MODEL_PATH = os.path.join(
-    BASE_DIR, "..", "model", "spam_model.pkl"
+    BASE_DIR, "model", "spam_model.pkl"
 )
 
 VECTORIZER_PATH = os.path.join(
-    BASE_DIR, "..", "model", "tfidf_vectorizer.pkl"
+    BASE_DIR, "model", "tfidf_vectorizer.pkl"
 )
 
 DATABASE = os.path.join(BASE_DIR, "email_history.db")
