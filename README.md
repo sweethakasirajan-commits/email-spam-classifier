@@ -4,7 +4,7 @@
 
 Email Spam Classification is a machine learning-based project developed to identify whether an email message is **Spam** or **Ham (Not Spam)**.
 
-The project combines **Data Warehouse concepts, text preprocessing, TF-IDF feature extraction, Machine Learning, and Flask** to provide an end-to-end email classification system.
+The project combines **Data Warehouse concepts, text preprocessing, TF-IDF feature extraction, Machine Learning, SQLite database storage, and Flask** to provide an end-to-end email classification system.
 
 ## 🎯 Objectives
 
@@ -12,8 +12,9 @@ The project combines **Data Warehouse concepts, text preprocessing, TF-IDF featu
 - Preprocess and clean email text data.
 - Extract useful text features using TF-IDF.
 - Train a machine learning classification model.
-- Store classification information in a structured Data Warehouse.
-- Provide a simple web interface for users to test email messages.
+- Store prediction history in a structured database.
+- Provide a web interface for email classification.
+- Display prediction confidence and classification history.
 
 ## 🏗️ System Workflow
 
@@ -28,65 +29,76 @@ Machine Learning Model
       ↓
 Spam / Ham Prediction
       ↓
-Data Warehouse
+Database / Data Warehouse
       ↓
 Flask Web Application
       ↓
-Prediction Result
-```
-
-## 🗄️ Data Warehouse Component
+Prediction Result & History
+🗄️ Data Warehouse Component
 
 The project uses a Data Warehouse approach to organize email classification information.
 
-### Fact Table
+Fact Table
 
-**fact_email_classification**
+fact_email_classification
 
-| Field | Description |
-|---|---|
-| email_id | Unique email identifier |
-| email_date | Date of email |
-| subject | Email subject |
-| message | Email content |
-| actual_label | Actual Spam/Ham label |
-| predicted_label | Model prediction |
-| model_confidence | Prediction confidence |
+Field	Description
+email_id	Unique email identifier
+email_date	Date of email
+subject	Email subject
+message	Email content
+actual_label	Actual Spam/Ham label
+predicted_label	Model prediction
+model_confidence	Prediction confidence
 
-The warehouse can be used for analyzing spam patterns, prediction results, and model performance.
+The stored information can be used for analyzing spam patterns, prediction results, and model performance.
 
-## 🤖 Machine Learning
+🤖 Machine Learning
 
 The project uses:
 
-- **TF-IDF** for converting text into numerical features.
-- **Multinomial Naive Bayes** for classifying email messages.
-- **Joblib** for saving and loading the trained model and TF-IDF vectorizer.
+TF-IDF for converting text into numerical features.
+Multinomial Naive Bayes for email classification.
+Joblib for saving and loading the trained model and TF-IDF vectorizer.
+📊 Model Performance
+Metric	Result
+Accuracy	96.5%
+Precision	100%
+Recall	73.83%
+F1-Score	84.94%
+🚀 Application Versions
+🟢 Basic Version
 
-## 📊 Model Performance
+The main project contains a simple Flask web application for:
 
-| Metric | Result |
-|---|---:|
-| Accuracy | 96.5% |
-| Precision | 100% |
-| Recall | 73.83% |
-| F1-Score | 84.94% |
+Entering email content
+Predicting Spam or Not Spam
+Displaying the classification result
+🔵 Advanced Version
 
-## 🛠️ Technologies Used
+The advanced_app folder contains an improved version with:
 
-- Python
-- Flask
-- Scikit-learn
-- TF-IDF
-- Multinomial Naive Bayes
-- Joblib
-- HTML/CSS
-- Data Warehouse
-- SQL
-
-## 📁 Project Structure
-
-```text
+Improved user interface
+Spam / Not Spam prediction
+Prediction confidence
+Prediction history
+SQLite database
+Dashboard
+Email statistics
+Recent prediction records
+🛠️ Technologies Used
+Python
+Flask
+Scikit-learn
+TF-IDF
+Multinomial Naive Bayes
+Joblib
+SQLite
+HTML
+CSS
+Data Warehouse
+SQL
+📁 Project Structure
 email-spam-classifier/
 │
 ├── app.py
@@ -97,62 +109,64 @@ email-spam-classifier/
 │   ├── spam_model.pkl
 │   └── tfidf_vectorizer.pkl
 │
-└── templates/
-    └── index.html
-```
-
-## ▶️ How to Run
-
-### 1. Clone the Repository
-
-```bash
+├── templates/
+│   └── index.html
+│
+└── advanced_app/
+    ├── app.py
+    │
+    ├── model/
+    │   ├── spam_model.pkl
+    │   └── tfidf_vectorizer.pkl
+    │
+    └── templates/
+        ├── index.html
+        └── dashboard.html
+▶️ How to Run the Basic Version
+1. Clone the Repository
 git clone https://github.com/sweethakasirajan-commits/email-spam-classifier.git
 cd email-spam-classifier
-```
-
-### 2. Install Required Packages
-
-```bash
+2. Install Required Packages
 pip install -r requirements.txt
-```
-
-### 3. Run the Flask Application
-
-```bash
+3. Run the Application
 python app.py
-```
+4. Open the Application
 
-### 4. Open the Application
+Open:
 
-Open the local URL shown in the terminal, usually:
-
-```text
 http://127.0.0.1:5000
-```
+▶️ Advanced Version
 
-## 🌐 Applications
+Go to the advanced application folder:
 
-- Email spam detection
-- Automated email classification
-- Spam pattern analysis
-- Machine learning-based email filtering
-- Data Warehouse analysis
+cd advanced_app
 
-## 🚀 Future Enhancements
+Then run:
 
-- Improve model performance with additional datasets.
-- Add more machine learning algorithms.
-- Add interactive Data Warehouse dashboards.
-- Add user authentication.
-- Deploy the application online.
-- Add advanced email analytics.
+python app.py
 
-## 👩‍💻 Author
+The advanced application provides the improved interface, prediction confidence, history, database storage, and dashboard.
 
-**Swetha Kasirajan**
+🌐 Applications
+Email spam detection
+Automated email classification
+Spam pattern analysis
+Machine learning-based email filtering
+Data Warehouse analysis
+🚀 Future Enhancements
+Improve model performance with additional datasets.
+Add more machine learning algorithms.
+Add interactive Data Warehouse dashboards.
+Add user authentication.
+Deploy the application online.
+Add advanced email analytics.
+👩‍💻 Author
+
+Swetha Kasirajan
 
 CSE Student | Aspiring UI/UX Designer
 
-## ⭐ Project Highlights
+⭐ Project Highlights
 
-This project demonstrates the integration of **Data Warehouse, Machine Learning, Natural Language Processing, and Web Application Development** for solving a real-world email spam classification problem.
+This project demonstrates the integration of Data Warehouse, Machine Learning, Natural Language Processing, and Web Application Development to solve a real-world email spam classification problem.
+
