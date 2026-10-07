@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Email Spam Classifier</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #eef4ff, #f8faff);
+            color: #1e293b;
+        }
+
+        /* Header */
+        .header {
+            width: 100%;
+            padding: 20px 8%;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+        }
+
+        .badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* Main */
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 45px auto;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+            margin-bottom: 12px;
+            color: #0f172a;
+        }
+
+        .hero h1 span {
+            color: #2563eb;
+        }
+
+        .hero p {
+            font-size: 16px;
+            color: #64748b;
+        }
+
+        /* Main card */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 35px rgba(15, 23, 42, 0.10);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+
+        .section-description {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 210px;
+            resize: vertical;
+            padding: 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            outline: none;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #334155;
+            transition: 0.3s;
+        }
+
+        textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
+        }
+
+        textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        /* Button */
+        .button-area {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        button {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 12px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+        }
+
+        /* Result */
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .spam {
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            color: #dc2626;
+        }
+
+        .not-spam {
+            background: #f0fdf4;
+            border: 2px solid #bbf7d0;
+            color: #16a34a;
+        }
+
+        .result-icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .result h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .result p {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* Information cards */
+        .info-section {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 22px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.07);
+        }
+
+        .info-icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .info-card h3 {
+            font-size: 17px;
+            margin-bottom: 7px;
+            color: #0f172a;
+        }
+
+        .info-card p {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #64748b;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        /* Mobile */
+        @media (max-width: 700px) {
+
+            .header {
+                padding: 15px 5%;
+            }
+
+            .badge {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 29px;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            .info-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="header">
+
+        <div class="logo">
+            <div class="logo-icon">✉</div>
+            EmailGuard
+        </div>
+
+        <div class="badge">
+            AI-Powered Detection
+        </div>
+
+    </header>
+
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <!-- Hero -->
+        <section class="hero">
+
+            <h1>
+                Email <span>Spam Classifier</span>
+            </h1>
+
+            <p>
+                Detect unwanted and suspicious emails using Machine Learning
+            </p>
+
+        </section>
+
+
+        <!-- Classifier Card -->
+        <section class="card">
+
+            <div class="section-title">
+                Analyze Your Email
+            </div>
+
+            <div class="section-description">
+                Enter the email message below and our trained machine learning
+                model will classify it as Spam or Not Spam.
+            </div>
+
+
+            <!-- IMPORTANT:
+                 Keep this form action/method compatible with your existing Flask app.
+            -->
+
+            <form method="POST">
+
+                <textarea
+                    name="message"
+                    placeholder="Paste your email message here...
+
+Example:
+Congratulations! You have won a free prize. Click the link below to claim your reward."
+                    required
+                ></textarea>
+
+
+                <div class="button-area">
+
+                    <button type="submit">
+                        🔍 Analyze Email
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <!-- Prediction Result -->
+
+            {% if prediction %}
+
+                {% if 'spam' in prediction|lower and 'not' not in prediction|lower %}
+
+                    <div class="result spam">
+
+                        <div class="result-icon">
+                            🚨
+                        </div>
+
+                        <h2>
+                            {{ prediction }}
+                        </h2>
+
+                        <p>
+                            This email appears to be suspicious or unwanted.
+                        </p>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="result not-spam">
+
+                        <div class="result-icon">
+                            ✅
+                        </div>
+
+                        <h2>
+                            {{ prediction }}
+                        </h2>
+
+                        <p>
+                            This email appears to be safe and legitimate.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- Information Cards -->
+        <section class="info-section">
+
+            <div class="info-card">
+
+                <div class="info-icon">🤖</div>
+
+                <h3>
+                    Machine Learning
+                </h3>
+
+                <p>
+                    Uses a trained machine learning model to identify
+                    patterns in email messages.
+                </p>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <div class="info-icon">📊</div>
+
+                <h3>
+                    Text Analysis
+                </h3>
+
+                <p>
+                    Email text is converted into numerical features using
+                    TF-IDF before classification.
+                </p>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <div class="info-icon">🛡️</div>
+
+                <h3>
+                    Spam Protection
+                </h3>
+
+                <p>
+                    Helps identify suspicious messages and reduce unwanted
+                    email content.
+                </p>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+
+        EmailGuard • Email Spam Classification System
+
+    </footer>
+
+</body>
+</html>
