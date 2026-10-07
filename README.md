@@ -27,6 +27,13 @@ TF-IDF Feature Extraction
 Machine Learning Model
       ↓
 Spam / Ham Prediction
+      ↓
+Data Warehouse
+      ↓
+Flask Web Application
+      ↓
+Prediction Result
+```
 
 ## 🗄️ Data Warehouse Component
 
@@ -92,10 +99,60 @@ email-spam-classifier/
 │
 └── templates/
     └── index.html
+```
 
-      ↓
-Data Warehouse
-      ↓
-Flask Web Application
-      ↓
-Prediction Result
+## ▶️ How to Run
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/sweethakasirajan-commits/email-spam-classifier.git
+cd email-spam-classifier
+```
+
+### 2. Install Required Packages
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Run the Flask Application
+
+```bash
+python app.py
+```
+
+### 4. Open the Application
+
+Open the local URL shown in the terminal, usually:
+
+```text
+http://127.0.0.1:5000
+```
+
+## 🌐 Applications
+
+- Email spam detection
+- Automated email classification
+- Spam pattern analysis
+- Machine learning-based email filtering
+- Data Warehouse analysis
+
+## 🚀 Future Enhancements
+
+- Improve model performance with additional datasets.
+- Add more machine learning algorithms.
+- Add interactive Data Warehouse dashboards.
+- Add user authentication.
+- Deploy the application online.
+- Add advanced email analytics.
+
+## 👩‍💻 Author
+
+**Swetha K**
+
+CSE Student | Aspiring UI/UX Designer
+
+## ⭐ Project Highlights
+
+This project demonstrates the integration of **Data Warehouse, Machine Learning, Natural Language Processing, and Web Application Development** for solving a real-world email spam classification problem.
