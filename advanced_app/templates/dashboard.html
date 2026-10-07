@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EmailGuard AI | Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            min-height: 100vh;
+            color: #f8fafc;
+            background:
+                radial-gradient(circle at 10% 10%, rgba(59,130,246,0.16), transparent 30%),
+                radial-gradient(circle at 90% 20%, rgba(139,92,246,0.14), transparent 30%),
+                linear-gradient(135deg, #07111f, #0b1428 50%, #111827);
+        }
+
+        header {
+            padding: 20px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(7,17,31,0.65);
+            backdrop-filter: blur(15px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 13px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+        }
+
+        .brand h2 {
+            font-size: 20px;
+        }
+
+        .brand p {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #cbd5e1;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            transition: 0.25s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.06);
+        }
+
+        main {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 45px 0;
+        }
+
+        .heading {
+            margin-bottom: 30px;
+        }
+
+        .heading h1 {
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .heading p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* STAT CARDS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            padding: 22px;
+            border-radius: 18px;
+            background: rgba(15,23,42,0.72);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(59,130,246,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 30px;
+            margin: 17px 0 5px;
+        }
+
+        .stat-card p {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .spam-icon {
+            background: rgba(239,68,68,0.1);
+        }
+
+        .safe-icon {
+            background: rgba(34,197,94,0.1);
+        }
+
+        .confidence-icon {
+            background: rgba(139,92,246,0.12);
+        }
+
+        /* ANALYTICS */
+
+        .analytics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .panel {
+            padding: 25px;
+            border-radius: 20px;
+            background: rgba(15,23,42,0.72);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .panel h3 {
+            font-size: 16px;
+            margin-bottom: 22px;
+        }
+
+        /* DONUT */
+
+        .donut-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 35px;
+            min-height: 180px;
+        }
+
+        .donut {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background:
+                conic-gradient(
+                    #ef4444
+                    {% if total > 0 %}
+                        {{ (spam / total * 100)|round(2) }}%
+                    {% else %}
+                        0%
+                    {% endif %},
+
+                    #22c55e
+                    {% if total > 0 %}
+                        {{ (spam / total * 100)|round(2) }}%
+                    {% else %}
+                        0%
+                    {% endif %}
+                    100%
+                );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .donut-inner {
+            width: 105px;
+            height: 105px;
+            border-radius: 50%;
+            background: #0f172a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .donut-inner strong {
+            font-size: 25px;
+        }
+
+        .donut-inner span {
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .legend div {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 12px 0;
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .red {
+            background: #ef4444;
+        }
+
+        .green {
+            background: #22c55e;
+        }
+
+        /* CONFIDENCE */
+
+        .confidence-number {
+            font-size: 42px;
+            font-weight: 700;
+            margin: 20px 0 10px;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            width: {{ average_confidence }}%;
+            background: linear-gradient(90deg, #2563eb, #8b5cf6);
+            border-radius: inherit;
+        }
+
+        .confidence-text {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        /* TABLE */
+
+        .history-panel {
+            padding: 25px;
+            border-radius: 20px;
+            background: rgba(15,23,42,0.72);
+            border: 1px solid rgba(255,255,255,0.08);
+            overflow-x: auto;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .history-header h3 {
+            font-size: 16px;
+        }
+
+        .history-header span {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 13px 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        td {
+            padding: 15px 12px;
+            font-size: 12px;
+            color: #cbd5e1;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .message {
+            max-width: 430px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .badge-spam,
+        .badge-safe {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 30px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .badge-spam {
+            color: #fca5a5;
+            background: rgba(239,68,68,0.1);
+        }
+
+        .badge-safe {
+            color: #86efac;
+            background: rgba(34,197,94,0.1);
+        }
+
+        footer {
+            text-align: center;
+            color: #475569;
+            padding: 25px;
+            font-size: 11px;
+        }
+
+        @media (max-width: 850px) {
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .analytics {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 550px) {
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .heading h1 {
+                font-size: 27px;
+            }
+
+            .donut-area {
+                flex-direction: column;
+            }
+
+            header {
+                padding: 18px 5%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            ✉
+        </div>
+
+        <div>
+            <h2>EmailGuard AI</h2>
+            <p>Email Security Analytics</p>
+        </div>
+
+    </div>
+
+    <a href="/" class="back-btn">
+        ← Classifier
+    </a>
+
+</header>
+
+
+<main>
+
+    <div class="heading">
+
+        <h1>Analytics Dashboard</h1>
+
+        <p>
+            Monitor email classification results and machine learning performance.
+        </p>
+
+    </div>
+
+
+    <!-- STATISTICS -->
+
+    <section class="stats">
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+                <span>Total Emails</span>
+
+                <div class="stat-icon">
+                    📧
+                </div>
+            </div>
+
+            <h3>{{ total }}</h3>
+
+            <p>Total analyzed messages</p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+                <span>Spam Emails</span>
+
+                <div class="stat-icon spam-icon">
+                    🚨
+                </div>
+            </div>
+
+            <h3>{{ spam }}</h3>
+
+            <p>Suspicious messages detected</p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+                <span>Safe Emails</span>
+
+                <div class="stat-icon safe-icon">
+                    ✓
+                </div>
+            </div>
+
+            <h3>{{ not_spam }}</h3>
+
+            <p>Legitimate messages detected</p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+                <span>Avg. Confidence</span>
+
+                <div class="stat-icon confidence-icon">
+                    🎯
+                </div>
+            </div>
+
+            <h3>{{ average_confidence }}%</h3>
+
+            <p>Average model confidence</p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ANALYTICS -->
+
+    <section class="analytics">
+
+        <div class="panel">
+
+            <h3>Spam vs Safe Emails</h3>
+
+            <div class="donut-area">
+
+                <div class="donut">
+
+                    <div class="donut-inner">
+
+                        <strong>{{ total }}</strong>
+
+                        <span>Total</span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="legend">
+
+                    <div>
+                        <span class="dot red"></span>
+                        Spam — {{ spam }}
+                    </div>
+
+                    <div>
+                        <span class="dot green"></span>
+                        Safe — {{ not_spam }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="panel">
+
+            <h3>Model Confidence</h3>
+
+            <div class="confidence-number">
+                {{ average_confidence }}%
+            </div>
+
+            <p class="confidence-text">
+                Average confidence of predictions stored in the database.
+            </p>
+
+            <div class="confidence-bar">
+
+                <div class="confidence-fill"></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- HISTORY -->
+
+    <section class="history-panel">
+
+        <div class="history-header">
+
+            <h3>Recent Predictions</h3>
+
+            <span>Latest 20 classifications</span>
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Email Message</th>
+                    <th>Prediction</th>
+                    <th>Confidence</th>
+                    <th>Analyzed At</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for item in history %}
+
+                <tr>
+
+                    <td>
+                        #{{ item["id"] }}
+                    </td>
+
+                    <td class="message">
+                        {{ item["message"] }}
+                    </td>
+
+                    <td>
+
+                        {% if item["prediction"] == "SPAM" %}
+
+                            <span class="badge-spam">
+                                SPAM
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge-safe">
+                                NOT SPAM
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        {% if item["confidence"] is not none %}
+                            {{ item["confidence"] }}%
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {{ item["analyzed_at"] }}
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="5" style="text-align:center; padding:30px; color:#64748b;">
+                        No predictions have been recorded yet.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+</main>
+
+
+<footer>
+    EmailGuard AI • Email Spam Classification System
+</footer>
+
+</body>
+</html>

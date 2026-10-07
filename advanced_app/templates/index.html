@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Spam Classifier</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0f1117;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: #171a23;
+            border-right: 1px solid #292d38;
+            padding: 28px 18px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+        }
+
+        .logo {
+            font-size: 21px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            padding-left: 10px;
+        }
+
+        .logo span {
+            color: #7c5cff;
+        }
+
+        .nav-title {
+            color: #777d8c;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin: 20px 10px 10px;
+            letter-spacing: 1px;
+        }
+
+        .nav-item {
+            display: block;
+            text-decoration: none;
+            color: #aeb3c0;
+            padding: 13px 12px;
+            border-radius: 9px;
+            margin-bottom: 6px;
+            transition: 0.2s;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #252938;
+            color: white;
+        }
+
+        .nav-item.active {
+            border-left: 3px solid #7c5cff;
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: 240px;
+            width: calc(100% - 240px);
+            padding: 32px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .topbar h1 {
+            font-size: 28px;
+        }
+
+        .topbar p {
+            color: #858b99;
+            margin-top: 7px;
+            font-size: 14px;
+        }
+
+        .dashboard-btn {
+            text-decoration: none;
+            background: #252938;
+            color: white;
+            padding: 11px 17px;
+            border-radius: 8px;
+            border: 1px solid #343847;
+        }
+
+        .dashboard-btn:hover {
+            background: #303445;
+        }
+
+        /* STAT CARDS */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            background: #171a23;
+            border: 1px solid #292d38;
+            border-radius: 13px;
+            padding: 20px;
+        }
+
+        .stat-card h3 {
+            color: #858b99;
+            font-size: 13px;
+            font-weight: normal;
+        }
+
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 9px;
+        }
+
+        /* CONTENT GRID */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 22px;
+        }
+
+        .card {
+            background: #171a23;
+            border: 1px solid #292d38;
+            border-radius: 13px;
+            padding: 25px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .card-subtitle {
+            color: #858b99;
+            font-size: 13px;
+            margin-bottom: 22px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 230px;
+            resize: vertical;
+            background: #0f1117;
+            border: 1px solid #303542;
+            border-radius: 10px;
+            color: white;
+            padding: 16px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #7c5cff;
+        }
+
+        .analyze-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #7c5cff;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .analyze-btn:hover {
+            background: #6848e8;
+        }
+
+        /* RESULT */
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background: #20242f;
+            border: 1px solid #343847;
+        }
+
+        .result-label {
+            color: #858b99;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result-value {
+            font-size: 26px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .spam {
+            color: #ff5c7a;
+        }
+
+        .safe {
+            color: #42d392;
+        }
+
+        .confidence {
+            margin-top: 20px;
+        }
+
+        .confidence-header {
+            display: flex;
+            justify-content: space-between;
+            color: #aeb3c0;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .progress {
+            width: 100%;
+            height: 8px;
+            background: #303542;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #7c5cff;
+            border-radius: 20px;
+        }
+
+        /* INFO */
+        .info-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #292d38;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-item strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .info-item span {
+            color: #858b99;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* HISTORY */
+        .history-card {
+            margin-top: 22px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            text-align: left;
+            color: #777d8c;
+            font-size: 12px;
+            padding: 12px;
+            border-bottom: 1px solid #292d38;
+        }
+
+        td {
+            padding: 13px 12px;
+            border-bottom: 1px solid #232631;
+            font-size: 13px;
+            color: #c8ccd6;
+        }
+
+        .badge {
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .badge-spam {
+            background: rgba(255, 92, 122, 0.12);
+            color: #ff5c7a;
+        }
+
+        .badge-safe {
+            background: rgba(66, 211, 146, 0.12);
+            color: #42d392;
+        }
+
+        .empty {
+            color: #777d8c;
+            padding: 20px 0;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            Spam<span>Guard</span>
+        </div>
+
+        <div class="nav-title">Navigation</div>
+
+        <a href="/" class="nav-item active">
+            🛡️ Classifier
+        </a>
+
+        <a href="/dashboard" class="nav-item">
+            📊 Dashboard
+        </a>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="topbar">
+
+            <div>
+                <h1>Email Spam Classifier</h1>
+                <p>Analyze emails using machine learning</p>
+            </div>
+
+            <a href="/dashboard" class="dashboard-btn">
+                View Dashboard →
+            </a>
+
+        </div>
+
+
+        <!-- STAT CARDS -->
+        <div class="stats">
+
+            <div class="stat-card">
+                <h3>System</h3>
+                <div class="number">Online</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Model</h3>
+                <div class="number">ML</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Database</h3>
+                <div class="number">Active</div>
+            </div>
+
+        </div>
+
+
+        <!-- MAIN CONTENT -->
+        <div class="content-grid">
+
+            <!-- ANALYZER -->
+            <div class="card">
+
+                <div class="card-title">
+                    Analyze Email
+                </div>
+
+                <div class="card-subtitle">
+                    Enter an email message below to classify it as spam or not spam.
+                </div>
+
+                <form method="POST">
+
+                    <textarea
+                        name="message"
+                        placeholder="Paste or type your email message here..."
+                        required
+                    >{{ message }}</textarea>
+
+                    <button type="submit" class="analyze-btn">
+                        🔍 Analyze Email
+                    </button>
+
+                </form>
+
+
+                {% if prediction %}
+
+                <div class="result-box">
+
+                    <div class="result-label">
+                        Prediction Result
+                    </div>
+
+                    <div class="result-value
+                        {% if prediction == 'SPAM' %}
+                            spam
+                        {% else %}
+                            safe
+                        {% endif %}
+                    ">
+                        {% if prediction == 'SPAM' %}
+                            ⚠ SPAM
+                        {% else %}
+                            ✓ NOT SPAM
+                        {% endif %}
+                    </div>
+
+
+                    {% if confidence is not none %}
+
+                    <div class="confidence">
+
+                        <div class="confidence-header">
+                            <span>Model Confidence</span>
+                            <span>{{ confidence }}%</span>
+                        </div>
+
+                        <div class="progress">
+                            <div
+                                class="progress-bar"
+                                style="width: {{ confidence }}%;">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- INFORMATION -->
+            <div class="card">
+
+                <div class="card-title">
+                    System Overview
+                </div>
+
+                <div class="card-subtitle">
+                    About this classifier
+                </div>
+
+
+                <div class="info-item">
+                    <strong>🤖 Machine Learning</strong>
+                    <span>
+                        The trained model analyzes the email content and predicts whether it is spam.
+                    </span>
+                </div>
+
+
+                <div class="info-item">
+                    <strong>📝 Text Processing</strong>
+                    <span>
+                        TF-IDF vectorization converts email text into numerical features for classification.
+                    </span>
+                </div>
+
+
+                <div class="info-item">
+                    <strong>🗄️ Data Warehouse</strong>
+                    <span>
+                        Prediction results are stored in the project database for history and analysis.
+                    </span>
+                </div>
+
+
+                <div class="info-item">
+                    <strong>📊 Analytics</strong>
+                    <span>
+                        Use the dashboard to view prediction statistics and recent classification history.
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- HISTORY -->
+        <div class="card history-card">
+
+            <div class="card-title">
+                Recent Predictions
+            </div>
+
+            <div class="card-subtitle">
+                Latest email classification results
+            </div>
+
+
+            {% if history %}
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Prediction</th>
+                            <th>Confidence</th>
+                            <th>Analyzed At</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for item in history %}
+
+                        <tr>
+
+                            <td>
+                                {{ item['message'][:70] }}
+                                {% if item['message']|length > 70 %}...{% endif %}
+                            </td>
+
+                            <td>
+
+                                {% if item['prediction'] == 'SPAM' %}
+
+                                    <span class="badge badge-spam">
+                                        SPAM
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge badge-safe">
+                                        NOT SPAM
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ item['confidence'] }}%
+                            </td>
+
+                            <td>
+                                {{ item['analyzed_at'] }}
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+                <div class="empty">
+                    No predictions have been made yet.
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>
